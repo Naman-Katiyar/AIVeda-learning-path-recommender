@@ -67,6 +67,12 @@ export type Path = {
 
 const now = () => new Date().toISOString();
 const id = () => crypto.randomUUID();
+const safeIsoDate = (value: unknown, fallback = now()) => {
+  if (value === null || value === undefined || value === "") return fallback;
+  const date = new Date(value as string | number | Date);
+  if (Number.isNaN(date.getTime())) return fallback;
+  return date.toISOString();
+};
 export const users: User[] = [];
 export const profiles: Profile[] = [];
 export const goals: Goal[] = [];
@@ -101,7 +107,7 @@ export async function hydrateStore() {
       email: user.email,
       passwordHash: user.passwordHash,
       role: user.role as User["role"],
-      createdAt: new Date(user.createdAt).toISOString(),
+      createdAt: safeIsoDate(user.createdAt),
     })),
   );
   profiles.push(
@@ -124,7 +130,7 @@ export async function hydrateStore() {
       userId: goal.userId,
       text: goal.text ?? "",
       analysis: goal.analysis as Goal["analysis"],
-      createdAt: new Date(goal.createdAt).toISOString(),
+      createdAt: safeIsoDate(goal.createdAt),
     })),
   );
   paths.push(
@@ -135,7 +141,7 @@ export async function hydrateStore() {
       title: path.title ?? "Learning path",
       progress: path.progress ?? 0,
       items: path.items as PathItem[],
-      updatedAt: new Date(path.updatedAt).toISOString(),
+      updatedAt: safeIsoDate(path.updatedAt),
     })),
   );
   activities.push(
@@ -144,7 +150,7 @@ export async function hydrateStore() {
       userId: activity.userId,
       type: activity.type ?? "activity",
       title: activity.title ?? "Learning activity",
-      createdAt: new Date(activity.createdAt).toISOString(),
+      createdAt: safeIsoDate(activity.createdAt),
     })),
   );
 }
