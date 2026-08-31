@@ -1,0 +1,23 @@
+{
+  "name": "aiveda",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "concurrently \"npm run dev --workspace client\" \"npm run dev --workspace server\"",
+    "build": "npm run build --workspace client && npm run build --workspace server",
+    "lint": "npm run lint --workspace client && npm run lint --workspace server",
+    "test": "npm run test --workspace server",
+    "start": "npm run start --workspace server",
+    "format": "prettier --write .",
+    "seed": "npm run seed --workspace server"
+  },
+  "workspaces": [
+    "client",
+    "server",
+    "shared"
+  ],
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "prettier": "^3.5.3"
+  }
+}

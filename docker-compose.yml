@@ -1,0 +1,23 @@
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    ports: ["27017:27017"]
+    volumes: [pathwise-mongo:/data/db]
+  server:
+    build: ./server
+    environment:
+      NODE_ENV: production
+      PORT: 5000
+      MONGODB_URI: mongodb://mongo:27017/pathwise-ai
+      JWT_SECRET: change-me-in-production
+      AI_PROVIDER: mock
+      CLIENT_URL: http://localhost:5173
+    ports: ["5000:5000"]
+    depends_on: [mongo]
+  client:
+    build: ./client
+    ports: ["5173:80"]
+    depends_on: [server]
+volumes:
+  pathwise-mongo:
