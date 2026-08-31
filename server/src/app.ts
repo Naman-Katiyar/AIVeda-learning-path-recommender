@@ -29,9 +29,27 @@ const app = express();
 const clientDistPath = fileURLToPath(
   new URL("../../client/dist", import.meta.url),
 );
+const allowedOrigins = [
+  process.env.CLIENT_URL,
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+  "https://aiveda-learning-path-recommender.onrender.com",
+].filter(Boolean) as string[];
 
 app.use(helmet());
-app.use(cors({ origin: process.env.CLIENT_URL ?? "http://localhost:5173" }));
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+        return;
+      }
+
+      callback(null, true);
+    },
+    credentials: true,
+  }),
+);
 app.use(express.json({ limit: "1mb" }));
 app.use(morgan("dev"));
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, limit: 100 }));
