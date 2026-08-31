@@ -6,9 +6,7 @@ const Logo = () => (
     <span className="logo-mark">
       <i className="bi bi-stars" aria-hidden="true" />
     </span>
-    <span>
-      aiveda<span className="logo-ai">AI</span>
-    </span>
+    <span>AIveda</span>
   </div>
 );
 export default function AuthPage({
