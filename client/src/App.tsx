@@ -244,10 +244,24 @@ function App() {
   // Load real user data on mount
   useEffect(() => {
     const token = localStorage.getItem("aiveda_token");
-    if (!token) {
-      navigate("/");
+    const publicPaths = ["/", "/login", "/register", "/onboarding"];
+
+    if (!token && publicPaths.includes(location.pathname)) {
+      setLoading(false);
       return;
     }
+
+    if (!token) {
+      navigate("/", { replace: true });
+      setLoading(false);
+      return;
+    }
+
+    if (publicPaths.includes(location.pathname)) {
+      navigate("/dashboard", { replace: true });
+      return;
+    }
+
     (async () => {
       try {
         const [paths, analytics] = await Promise.all([
