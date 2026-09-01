@@ -3,6 +3,77 @@
   background:
     radial-gradient(circle at 75% 8%, #e8f5ec, transparent 30%), #f7f9f6;
   color: #1e2925;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+.landing.dark {
+  background:
+    radial-gradient(
+      circle at 20% -10%,
+      rgba(75, 166, 118, 0.18),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(121, 119, 255, 0.08),
+      transparent 32%
+    ),
+    #0e1715;
+  color: #edf6f2;
+}
+.landing.dark .landing-links a,
+.landing.dark .hero-copy > p,
+.landing.dark .hero-proof,
+.landing.dark .landing-footer,
+.landing.dark .feature-tile p,
+.landing.dark .step p,
+.landing.dark .copy-intro,
+.landing.dark .cta-copy p {
+  color: #9bb1aa;
+}
+.landing.dark .landing-nav,
+.landing.dark .path-preview,
+.landing.dark .step,
+.landing.dark .feature-tile,
+.landing.dark .landing-cta,
+.landing.dark .landing-footer,
+.landing.dark .preview-card {
+  background: rgba(20, 30, 28, 0.8);
+  border-color: rgba(109, 133, 124, 0.22);
+}
+.landing.dark .hero-visual:before {
+  border-color: rgba(124, 164, 148, 0.28);
+  box-shadow:
+    0 0 0 28px rgba(16, 28, 25, 0.8),
+    0 0 0 29px rgba(58, 106, 91, 0.18);
+}
+.landing.dark .path-preview,
+.landing.dark .feature-tile,
+.landing.dark .step {
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.2);
+}
+.landing.dark .landing-links a,
+.landing.dark .text-btn,
+.landing.dark .landing-theme-toggle,
+.landing.dark .preview-footer,
+.landing.dark .feature-tile h3,
+.landing.dark .step h3,
+.landing.dark .feature-heading h2,
+.landing.dark .center-heading h2,
+.landing.dark .hero h1,
+.landing.dark .landing-cta h2,
+.landing.dark .landing-footer .logo,
+.landing.dark .landing-cta strong {
+  color: #edf6f2;
+}
+.landing.dark .text-btn {
+  background: transparent;
+}
+.landing.dark .landing-theme-toggle {
+  border-color: rgba(141, 168, 157, 0.32);
+  background: rgba(255, 255, 255, 0.03);
+  color: #edf6f2;
 }
 .landing-nav {
   height: 78px;
@@ -26,6 +97,21 @@
   display: flex;
   align-items: center;
   gap: 18px;
+}
+.landing-theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid #dfeae2;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.5);
+  color: #3d5348;
+  transition: all 0.2s ease;
+}
+.landing-theme-toggle:hover {
+  background: rgba(75, 166, 118, 0.08);
 }
 .hero {
   max-width: 1180px;
@@ -391,6 +477,44 @@
   display: grid;
   grid-template-columns: 44% 56%;
   background: #fff;
+  color: #1e2925;
+}
+.auth-page.dark {
+  background: #0e1715;
+  color: #edf6f2;
+}
+.auth-page.dark .auth-aside {
+  background: #111f1b;
+}
+.auth-page.dark .auth-aside h1,
+.auth-page.dark .auth-aside .eyebrow,
+.auth-page.dark .auth-aside p,
+.auth-page.dark .auth-quote,
+.auth-page.dark .auth-quote small,
+.auth-page.dark .auth-form h2,
+.auth-page.dark .auth-form > p,
+.auth-page.dark .auth-form label,
+.auth-page.dark .auth-switch,
+.auth-page.dark .back-link,
+.auth-page.dark .auth-form-wrap {
+  color: #edf6f2;
+}
+.auth-page.dark .auth-form-wrap {
+  background: #0e1715;
+}
+.auth-page.dark .auth-form input,
+.auth-page.dark .social-btn {
+  background: rgba(20, 34, 31, 0.9);
+  border-color: rgba(124, 164, 148, 0.28);
+  color: #edf6f2;
+}
+.auth-page.dark .auth-form input::placeholder,
+.auth-page.dark .auth-form > p,
+.auth-page.dark .auth-switch {
+  color: #9bb1aa;
+}
+.auth-page.dark .social-btn {
+  color: #edf6f2;
 }
 .auth-aside {
   padding: 43px 12%;
@@ -424,6 +548,13 @@
 }
 .auth-form-wrap {
   padding: 30px 10%;
+}
+.auth-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
 }
 .back-link {
   display: flex;
@@ -518,6 +649,37 @@
 .onboarding-page {
   min-height: 100vh;
   background: #f3f8f3;
+  color: #1e2925;
+}
+.onboarding-page.dark {
+  background: #0e1715;
+  color: #edf6f2;
+}
+.onboarding-page.dark header,
+.onboarding-page.dark .onboarding-card textarea,
+.onboarding-page.dark .onboarding-card input,
+.onboarding-page.dark .onboarding-card select,
+.onboarding-page.dark .onboarding-skills button,
+.onboarding-page.dark .preference-grid button,
+.onboarding-page.dark .prompt-chips button {
+  background: rgba(20, 34, 31, 0.9);
+  border-color: rgba(124, 164, 148, 0.28);
+  color: #edf6f2;
+}
+.onboarding-page.dark .onboarding-page header > span,
+.onboarding-page.dark .onboarding-card > p,
+.onboarding-page.dark .onboarding-field > span,
+.onboarding-page.dark .onboarding-card label,
+.onboarding-page.dark .onboarding-card h1,
+.onboarding-page.dark .onboarding-card textarea,
+.onboarding-page.dark .prompt-chips button,
+.onboarding-page.dark .onboarding-skills button,
+.onboarding-page.dark .preference-grid button {
+  color: #edf6f2;
+}
+.onboarding-page.dark .onboarding-card > p,
+.onboarding-page.dark .onboarding-page header > span {
+  color: #9bb1aa;
 }
 .onboarding-page header {
   height: 75px;
@@ -527,6 +689,11 @@
   padding: 0 max(24px, calc((100% - 980px) / 2));
   background: #fff;
   border-bottom: 1px solid #e2ebe4;
+}
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 .onboarding-page header > span {
   font-size: 11px;
@@ -543,7 +710,7 @@
   transition: 0.3s;
 }
 .onboarding-card {
-  max-width: 600px;
+  max-width: 620px;
   margin: 70px auto;
   padding: 0 24px;
 }
@@ -558,8 +725,41 @@
   color: #7b8b81;
   max-width: 500px;
 }
+.onboarding-field {
+  display: block;
+  margin-top: 22px;
+}
+.onboarding-field > span,
+.onboarding-card label {
+  display: block;
+  font-size: 13px;
+  color: #2d3b35;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+.onboarding-card input,
+.onboarding-card select,
 .onboarding-card textarea {
   width: 100%;
+  border: 1px solid #bfe1d0;
+  border-radius: 10px;
+  background: #f8fbf9;
+  padding: 14px 16px;
+  color: #20342d;
+  font-size: 16px;
+  line-height: 1.5;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.onboarding-card input:focus,
+.onboarding-card select:focus,
+.onboarding-card textarea:focus {
+  border-color: #5ab58d;
+  box-shadow: 0 0 0 3px rgba(90, 181, 141, 0.12);
+  outline: none;
+}
+.onboarding-card textarea {
   resize: vertical;
   margin-top: 25px;
   line-height: 1.6;

@@ -16,6 +16,21 @@
   --yellow: #fff6d9;
   --shadow: 0 12px 34px rgba(36, 60, 47, 0.06);
 }
+.app.dark {
+  --ink: #edf6f2;
+  --muted: #9bb1aa;
+  --line: #2f413d;
+  --panel: #182724;
+  --panel-alt: #1f2d2a;
+  --panel-soft: #111d1b;
+  --green: #67d5ad;
+  --green-dark: #9feec5;
+  --mint: #16342d;
+  --peach: #2d1d16;
+  --blue: #162f46;
+  --yellow: #2d2b17;
+  --shadow: 0 18px 40px rgba(4, 12, 10, 0.42);
+}
 * {
   box-sizing: border-box;
 }
@@ -40,10 +55,161 @@ input:focus-visible {
   min-height: 100vh;
   background:
     radial-gradient(circle at 75% -10%, #eaf5ee 0, transparent 31%), #f7f9f6;
+  color: var(--ink);
 }
 .app.dark {
-  filter: saturate(0.9) brightness(0.82);
-  background: #18211d;
+  background:
+    radial-gradient(
+      circle at 20% -10%,
+      rgba(75, 166, 118, 0.12),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(123, 120, 255, 0.08),
+      transparent 32%
+    ),
+    #0e1715;
+  color: var(--ink);
+}
+.app.dark .sidebar,
+.app.dark .topbar,
+.app.dark .panel,
+.app.dark .stat-card,
+.app.dark .profile-menu,
+.app.dark .command,
+.app.dark .profile-mini,
+.app.dark .secondary-btn,
+.app.dark .filter-btn,
+.app.dark .upgrade,
+.app.dark .nav-item,
+.app.dark .upgrade-icon,
+.app.dark .avatar,
+.app.dark .focus-card,
+.app.dark .mode-panel,
+.app.dark .conversation,
+.app.dark .chat,
+.app.dark .assistant-avatar,
+.app.dark .message .bubble,
+.app.dark .suggestions button,
+.app.dark .chat-input {
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+.app.dark .sidebar {
+  background: #121d1b;
+  border-color: var(--line);
+}
+.app.dark .topbar {
+  background: rgba(11, 18, 17, 0.72);
+  border-color: var(--line);
+}
+.app.dark .panel,
+.app.dark .stat-card,
+.app.dark .profile-menu,
+.app.dark .command,
+.app.dark .secondary-btn,
+.app.dark .filter-btn,
+.app.dark .profile-mini,
+.app.dark .upgrade,
+.app.dark .focus-card,
+.app.dark .chat,
+.app.dark .conversation-list,
+.app.dark .conversation,
+.app.dark .chat-input,
+.app.dark .suggestions button {
+  background: var(--panel);
+  border-color: var(--line);
+  color: var(--ink);
+}
+.app.dark .nav-item {
+  background: transparent;
+  color: #b8c8c2;
+}
+.app.dark .nav-item:hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--ink);
+}
+.app.dark .nav-item.active {
+  background: rgba(97, 214, 163, 0.12);
+  color: var(--green-dark);
+}
+.app.dark .logo,
+.app.dark .page-header h1,
+.app.dark .panel h2,
+.app.dark .stat-card strong,
+.app.dark .breadcrumbs strong,
+.app.dark .profile-mini strong,
+.app.dark .focus-copy h3,
+.app.dark .chat-header strong {
+  color: var(--ink);
+}
+.app.dark .eyebrow,
+.app.dark .section-kicker,
+.app.dark .nav-label,
+.app.dark .profile-mini span,
+.app.dark .page-header p,
+.app.dark .stat-card span,
+.app.dark .muted,
+.app.dark .command,
+.app.dark .breadcrumbs,
+.app.dark .goal-copy,
+.app.dark .chat-disclaimer,
+.app.dark .activity-row span,
+.app.dark .provider {
+  color: var(--muted);
+}
+.app.dark .primary-btn {
+  background: linear-gradient(135deg, #2d8f73, #52b88d);
+  border-color: #52b88d;
+  box-shadow: 0 10px 20px rgba(48, 129, 90, 0.28);
+}
+.app.dark .secondary-btn,
+.app.dark .filter-btn,
+.app.dark .command {
+  background: rgba(255, 255, 255, 0.02);
+}
+.app.dark .icon-btn,
+.app.dark .more-btn,
+.app.dark .theme-toggle-btn {
+  color: #dfeae5;
+}
+.app.dark .icon-btn:hover,
+.app.dark .more-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--ink);
+}
+.app.dark .avatar {
+  background: linear-gradient(135deg, #1b5547, #58b89d);
+  color: #eafaf2;
+}
+.app.dark .profile-menu-item {
+  color: var(--ink);
+}
+.app.dark .profile-menu-item:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+.app.dark .profile-menu-item.danger {
+  color: #ff9a9a;
+}
+.app.dark .upgrade {
+  background: rgba(19, 48, 42, 0.9);
+  border-color: #23483e;
+}
+.app.dark .upgrade p,
+.app.dark .upgrade strong,
+.app.dark .upgrade button {
+  color: #dcefe7;
+}
+.app.dark .theme-toggle-btn {
+  border-color: var(--line);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--ink);
+}
+.app.dark .notification i {
+  border-color: #11231f;
 }
 .sidebar {
   position: fixed;
@@ -279,6 +445,15 @@ input:focus-visible {
   border: 0;
   background: transparent;
   color: #7f8f85;
+}
+.theme-toggle-btn {
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.05);
+  color: #dfeae5;
+}
+.app:not(.dark) .theme-toggle-btn {
+  color: #495d54;
+  background: rgba(17, 24, 22, 0.03);
 }
 .main {
   margin-left: 248px;

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   ArrowRight,
   BarChart3,
@@ -8,12 +9,18 @@ import {
   Flame,
   Lightbulb,
   Lock,
+  Moon,
   Play,
   Sparkles,
+  Sun,
   Target,
 } from "lucide-react";
 
-type Props = { onNavigate: (path: string) => void };
+type Props = {
+  onNavigate: (path: string) => void;
+  dark: boolean;
+  setDark: (value: boolean | ((current: boolean) => boolean)) => void;
+};
 const Avatar = () => <div className="avatar">AI</div>;
 const Logo = () => (
   <div className="logo">
@@ -24,7 +31,7 @@ const Logo = () => (
   </div>
 );
 
-export default function Landing({ onNavigate }: Props) {
+export default function Landing({ onNavigate, dark, setDark }: Props) {
   const steps = [
     ["01", "Tell us your goal", "Start with the ambition in your own words."],
     ["02", "Map your skills", "See what you know and what matters next."],
@@ -54,7 +61,7 @@ export default function Landing({ onNavigate }: Props) {
     ],
   ] as const;
   return (
-    <div className="landing">
+    <div className={dark ? "landing dark" : "landing"}>
       <header className="landing-nav container-fluid">
         <Logo />
         <div className="landing-links">
@@ -63,6 +70,13 @@ export default function Landing({ onNavigate }: Props) {
           <a href="#paths">Example paths</a>
         </div>
         <div className="landing-auth">
+          <button
+            className="landing-theme-toggle"
+            onClick={() => setDark((current: boolean) => !current)}
+            aria-label={dark ? "Switch to light theme" : "Switch to dark theme"}
+          >
+            {dark ? <Sun size={16} /> : <Moon size={16} />}
+          </button>
           <button className="text-btn" onClick={() => onNavigate("/login")}>
             Sign in
           </button>

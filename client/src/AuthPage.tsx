@@ -12,9 +12,13 @@ const Logo = () => (
 export default function AuthPage({
   mode,
   onNavigate,
+  dark,
+  setDark,
 }: {
   mode: "login" | "register";
   onNavigate: (path: string) => void;
+  dark: boolean;
+  setDark: (value: boolean | ((current: boolean) => boolean)) => void;
 }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -63,7 +67,7 @@ export default function AuthPage({
     }
   };
   return (
-    <div className="auth-page">
+    <div className={dark ? "auth-page dark" : "auth-page"}>
       <div className="auth-aside">
         <Logo />
         <div>
@@ -80,10 +84,19 @@ export default function AuthPage({
         </div>
       </div>
       <div className="auth-form-wrap">
-        <button className="back-link" onClick={() => onNavigate("/")}>
-          <ChevronRight size={15} style={{ transform: "rotate(180deg)" }} />{" "}
-          Back home
-        </button>
+        <div className="auth-topbar">
+          <button className="back-link" onClick={() => onNavigate("/")}>
+            <ChevronRight size={15} style={{ transform: "rotate(180deg)" }} />{" "}
+            Back home
+          </button>
+          <button
+            className="landing-theme-toggle auth-theme-toggle"
+            onClick={() => setDark((current: boolean) => !current)}
+            aria-label={dark ? "Switch to light theme" : "Switch to dark theme"}
+          >
+            {dark ? "☀" : "☾"}
+          </button>
+        </div>
         <form
           className="auth-form"
           onSubmit={(event) => {

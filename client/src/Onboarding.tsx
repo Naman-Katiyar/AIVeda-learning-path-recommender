@@ -48,7 +48,15 @@ const ALL_SKILLS = [
   "Figma",
 ];
 
-export default function Onboarding({ onComplete }: { onComplete: () => void }) {
+export default function Onboarding({
+  onComplete,
+  dark,
+  setDark,
+}: {
+  onComplete: () => void;
+  dark: boolean;
+  setDark: (value: boolean | ((current: boolean) => boolean)) => void;
+}) {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -126,10 +134,19 @@ export default function Onboarding({ onComplete }: { onComplete: () => void }) {
   };
 
   return (
-    <div className="onboarding-page">
+    <div className={dark ? "onboarding-page dark" : "onboarding-page"}>
       <header>
         <Logo />
-        <span>Step {step} of 3</span>
+        <div className="header-actions">
+          <button
+            className="landing-theme-toggle onboarding-theme-toggle"
+            onClick={() => setDark((current: boolean) => !current)}
+            aria-label={dark ? "Switch to light theme" : "Switch to dark theme"}
+          >
+            {dark ? "☀" : "☾"}
+          </button>
+          <span>Step {step} of 3</span>
+        </div>
       </header>
       <div className="onboarding-progress">
         <span style={{ width: step * 33.33 + "%" }} />
@@ -176,6 +193,46 @@ export default function Onboarding({ onComplete }: { onComplete: () => void }) {
               >
                 Cloud engineer
               </button>
+              <button
+                onClick={() =>
+                  setData({
+                    ...data,
+                    goal: "I want to become a full-stack developer and build products people use.",
+                  })
+                }
+              >
+                Full-stack developer
+              </button>
+              <button
+                onClick={() =>
+                  setData({
+                    ...data,
+                    goal: "I want to become a data analyst and learn how to turn data into decisions.",
+                  })
+                }
+              >
+                Data analyst
+              </button>
+              <button
+                onClick={() =>
+                  setData({
+                    ...data,
+                    goal: "I want to become a product designer and create intuitive digital experiences.",
+                  })
+                }
+              >
+                Product designer
+              </button>
+              <button
+                onClick={() =>
+                  setData({
+                    ...data,
+                    goal: "I want to become a cybersecurity analyst and build a strong foundation in security.",
+                  })
+                }
+              >
+                Cybersecurity analyst
+              </button>
             </div>
           </>
         )}
@@ -188,31 +245,44 @@ export default function Onboarding({ onComplete }: { onComplete: () => void }) {
               We use this to make your path relevant and validate your progress.
             </p>
 
-            <label style={{ marginTop: "20px", display: "block" }}>
-              Current occupation or role *
-              <input
-                type="text"
+            <label className="onboarding-field" style={{ marginTop: "20px" }}>
+              <span>Current occupation or role *</span>
+              <select
                 value={data.occupation}
                 onChange={(e) =>
                   setData({ ...data, occupation: e.target.value })
                 }
-                placeholder="e.g., Student, Product Manager, Teacher"
-              />
+              >
+                <option value="">Select your role</option>
+                <option value="Student">Student</option>
+                <option value="Working professional">
+                  Working professional
+                </option>
+                <option value="Product Manager">Product Manager</option>
+                <option value="Designer">Designer</option>
+                <option value="Teacher">Teacher</option>
+                <option value="Other">Other</option>
+              </select>
             </label>
 
-            <label style={{ display: "block" }}>
-              Education background
-              <input
-                type="text"
+            <label className="onboarding-field">
+              <span>Education background</span>
+              <select
                 value={data.education}
                 onChange={(e) =>
                   setData({ ...data, education: e.target.value })
                 }
-                placeholder="e.g., Computer Science degree, Self-taught"
-              />
+              >
+                <option value="Self-taught">Self-taught</option>
+                <option value="High school diploma">High school diploma</option>
+                <option value="Bachelor's degree">Bachelor's degree</option>
+                <option value="Master's degree">Master's degree</option>
+                <option value="College student">College student</option>
+                <option value="Other">Other</option>
+              </select>
             </label>
 
-            <div style={{ marginTop: "20px" }}>
+            <div className="onboarding-field" style={{ marginTop: "20px" }}>
               <label style={{ display: "block", marginBottom: "12px" }}>
                 Current experience level
               </label>

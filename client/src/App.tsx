@@ -31,6 +31,7 @@ import {
   Home,
   LayoutGrid,
   Lightbulb,
+  Sun,
   Lock,
   Menu,
   MessageCircle,
@@ -227,6 +228,10 @@ const skillData = [
 function App() {
   const location = useLocation();
   const navigate = useNavigate();
+  const [dark, setDark] = useState<boolean>(() => {
+    const saved = localStorage.getItem("aiveda_theme");
+    return saved ? saved === "dark" : true;
+  });
   const [view, setView] = useState<View>("dashboard");
   const [authUser, setAuthUser] = useState<AuthUser | null>(() => {
     const savedUser = localStorage.getItem("aiveda_user");
@@ -237,6 +242,9 @@ function App() {
     }
   });
   const [items, setItems] = useState<RoadmapItem[]>([]);
+  useEffect(() => {
+    localStorage.setItem("aiveda_theme", dark ? "dark" : "light");
+  }, [dark]);
   const [analytics, setAnalytics] = useState<{
     overallProgress: number;
     currentStreak: number;
@@ -252,14 +260,13 @@ function App() {
   });
   const [loading, setLoading] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [dark, setDark] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [selected, setSelected] = useState<RoadmapItem | null>(null);
 
   // Load real user data on mount
   useEffect(() => {
     const token = localStorage.getItem("aiveda_token");
-    const publicPaths = ["/", "/login", "/register", "/onboarding"];
+    const publicPaths = ["/", "/login", "/register"];
 
     if (!token && publicPaths.includes(location.pathname)) {
       setAuthUser(null);
@@ -276,7 +283,7 @@ function App() {
       return;
     }
 
-    if (publicPaths.includes(location.pathname)) {
+    if (location.pathname === "/login" || location.pathname === "/register") {
       navigate("/dashboard", { replace: true });
       return;
     }
@@ -370,17 +377,26 @@ function App() {
         .catch(() => undefined);
   };
 
-  if (location.pathname === "/") return <Landing onNavigate={navigate} />;
+  if (location.pathname === "/")
+    return <Landing onNavigate={navigate} dark={dark} setDark={setDark} />;
   if (location.pathname === "/login" || location.pathname === "/register") {
     return (
       <AuthPage
         mode={location.pathname.slice(1) as "login" | "register"}
         onNavigate={navigate}
+        dark={dark}
+        setDark={setDark}
       />
     );
   }
   if (location.pathname === "/onboarding")
-    return <Onboarding onComplete={() => navigate("/dashboard")} />;
+    return (
+      <Onboarding
+        onComplete={() => navigate("/dashboard")}
+        dark={dark}
+        setDark={setDark}
+      />
+    );
 
   return (
     <div className={dark ? "app dark" : "app"}>
@@ -532,6 +548,15 @@ function App() {
             >
               <Bell size={18} />
               <i />
+            </button>
+            <button
+              className="icon-btn theme-toggle-btn"
+              onClick={() => setDark(!dark)}
+              aria-label={
+                dark ? "Switch to light theme" : "Switch to dark theme"
+              }
+            >
+              {dark ? <Sun size={18} /> : <Moon size={18} />}
             </button>
             <div className="profile-menu-root" data-profile-menu-root>
               <button
