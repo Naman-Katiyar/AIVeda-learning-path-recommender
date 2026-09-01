@@ -15,6 +15,7 @@ type OnboardingData = {
   goal: string;
   occupation: string;
   education: string;
+  experience: string;
   skills: Array<{ name: string; proficiency: number }>;
   hoursPerWeek: number;
   learningStyle: string;
@@ -55,6 +56,7 @@ export default function Onboarding({ onComplete }: { onComplete: () => void }) {
     goal: "I want to become a full-stack developer and build products people use.",
     occupation: "",
     education: "Self-taught",
+    experience: "Beginner",
     skills: [],
     hoursPerWeek: 6,
     learningStyle: "Hands-on projects",
@@ -99,7 +101,7 @@ export default function Onboarding({ onComplete }: { onComplete: () => void }) {
         await api.updateProfile({
           occupation: data.occupation,
           education: data.education,
-          experience: "User defined",
+          experience: data.experience,
           skills: skillsArray,
           preferences: {
             hoursPerWeek: data.hoursPerWeek,
@@ -209,6 +211,23 @@ export default function Onboarding({ onComplete }: { onComplete: () => void }) {
                 placeholder="e.g., Computer Science degree, Self-taught"
               />
             </label>
+
+            <div style={{ marginTop: "20px" }}>
+              <label style={{ display: "block", marginBottom: "12px" }}>
+                Current experience level
+              </label>
+              <div className="preference-grid">
+                {["Beginner", "Intermediate", "Advanced"].map((level) => (
+                  <button
+                    key={level}
+                    className={data.experience === level ? "selected" : ""}
+                    onClick={() => setData({ ...data, experience: level })}
+                  >
+                    {level}
+                  </button>
+                ))}
+              </div>
+            </div>
 
             <h3 style={{ marginTop: "30px", marginBottom: "15px" }}>
               Which skills do you already have?

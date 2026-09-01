@@ -163,8 +163,8 @@ This design enables explainable outputs. Instead of relying on opaque recommenda
 
 ## Live Application and Video Links
 
-- Deployed Application URL: [Insert Deployed URL Here]
-- Demo Video Link: [Insert Demo Video URL Here]
+- Deployed Application URL: https://aiveda-learning-path-recommender.onrender.com/
+- Demo Video Link:
 
 ## Team Credentials
 

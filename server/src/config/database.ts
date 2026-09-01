@@ -68,6 +68,34 @@ export const GoalModel = model("Goal", goalSchema);
 export const PathModel = model("LearningPath", pathSchema);
 export const ActivityModel = model("Activity", activitySchema);
 
+export async function ensureUserCollectionCompatibility() {
+  if (mongoose.connection.readyState !== 1) return;
+
+  const usersCollection = mongoose.connection.collection("users");
+
+  try {
+    await usersCollection.dropIndex("username_1");
+  } catch (error: any) {
+    if (error?.code !== 26) {
+      console.warn(
+        "Unable to drop legacy username index:",
+        error.message ?? error,
+      );
+    }
+  }
+
+  try {
+    await usersCollection.createIndex(
+      { email: 1 },
+      { unique: true, background: true },
+    );
+  } catch (error: any) {
+    if (error?.code !== 11000) {
+      console.warn("Unable to ensure email index:", error.message ?? error);
+    }
+  }
+}
+
 export async function connectDatabase() {
   const uri = process.env.MONGODB_URI;
   if (!uri) {
@@ -82,6 +110,7 @@ export async function connectDatabase() {
     maxPoolSize: 10,
   });
   console.log(`MongoDB connected: ${mongoose.connection.name}`);
+  await ensureUserCollectionCompatibility();
   return true;
 }
 export async function disconnectDatabase() {

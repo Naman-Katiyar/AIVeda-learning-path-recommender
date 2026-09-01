@@ -67,6 +67,12 @@ type View =
   | "settings"
   | "admin";
 type ItemStatus = "completed" | "in_progress" | "available" | "locked";
+type AuthUser = {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+};
 
 type RoadmapItem = {
   id: number;
@@ -222,6 +228,14 @@ function App() {
   const location = useLocation();
   const navigate = useNavigate();
   const [view, setView] = useState<View>("dashboard");
+  const [authUser, setAuthUser] = useState<AuthUser | null>(() => {
+    const savedUser = localStorage.getItem("aiveda_user");
+    try {
+      return savedUser ? (JSON.parse(savedUser) as AuthUser) : null;
+    } catch {
+      return null;
+    }
+  });
   const [items, setItems] = useState<RoadmapItem[]>([]);
   const [analytics, setAnalytics] = useState<{
     overallProgress: number;
@@ -239,6 +253,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dark, setDark] = useState(false);
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [selected, setSelected] = useState<RoadmapItem | null>(null);
 
   // Load real user data on mount
@@ -247,11 +262,15 @@ function App() {
     const publicPaths = ["/", "/login", "/register", "/onboarding"];
 
     if (!token && publicPaths.includes(location.pathname)) {
+      setAuthUser(null);
       setLoading(false);
+      setProfileMenuOpen(false);
       return;
     }
 
     if (!token) {
+      localStorage.removeItem("aiveda_user");
+      setAuthUser(null);
       navigate("/", { replace: true });
       setLoading(false);
       return;
@@ -264,7 +283,8 @@ function App() {
 
     (async () => {
       try {
-        const [paths, analytics] = await Promise.all([
+        const [user, paths, analytics] = await Promise.all([
+          api.me().catch(() => null),
           api.getPaths().catch(() => []),
           api.getAnalytics().catch(() => ({
             overallProgress: 0,
@@ -274,6 +294,25 @@ function App() {
             recentActivity: [],
           })),
         ]);
+
+        if (user) {
+          setAuthUser(user);
+          localStorage.setItem("aiveda_user", JSON.stringify(user));
+        } else {
+          const fallbackUser = (() => {
+            const savedUser = localStorage.getItem("aiveda_user");
+            if (!savedUser) return null;
+            try {
+              return JSON.parse(savedUser) as AuthUser;
+            } catch {
+              return null;
+            }
+          })();
+          if (fallbackUser) {
+            setAuthUser(fallbackUser);
+          }
+        }
+
         if (paths[0]?.items) {
           setItems(
             paths[0].items.map((item: any) => ({
@@ -297,9 +336,21 @@ function App() {
         setLoading(false);
       }
     })();
-  }, [navigate]);
+  }, [navigate, location.pathname]);
 
   const completed = items.filter((item) => item.status === "completed").length;
+
+  const handleLogout = async () => {
+    setProfileMenuOpen(false);
+    try {
+      await api.logout().catch(() => undefined);
+    } finally {
+      localStorage.removeItem("aiveda_token");
+      localStorage.removeItem("aiveda_user");
+      setAuthUser(null);
+      navigate("/login", { replace: true });
+    }
+  };
 
   const go = (next: View) => {
     setView(next);
@@ -346,7 +397,34 @@ function App() {
           <button className="icon-btn" aria-label="Notifications">
             <Bell size={18} />
           </button>
-          <Avatar />
+          <div className="profile-menu-root" data-profile-menu-root>
+            <button
+              className="avatar-button"
+              onClick={() => setProfileMenuOpen((open) => !open)}
+              aria-label="User profile menu"
+            >
+              <Avatar name={authUser?.name} />
+            </button>
+            {profileMenuOpen && (
+              <div className="profile-menu">
+                <button
+                  className="profile-menu-item"
+                  onClick={() => {
+                    setProfileMenuOpen(false);
+                    go("profile");
+                  }}
+                >
+                  Profile
+                </button>
+                <button
+                  className="profile-menu-item danger"
+                  onClick={handleLogout}
+                >
+                  Log out
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </header>
       <aside className={mobileOpen ? "sidebar open" : "sidebar"}>
@@ -361,10 +439,14 @@ function App() {
           </button>
         </div>
         <div className="profile-mini">
-          <Avatar />
+          <Avatar name={authUser?.name} />
           <div>
-            <strong>Alex Morgan</strong>
-            <span>Full-stack learner</span>
+            <strong>{authUser?.name || "Learner"}</strong>
+            <span>
+              {authUser?.role
+                ? `${authUser.role} learner`
+                : "Full-stack learner"}
+            </span>
           </div>
           <ChevronRight size={16} />
         </div>
@@ -426,6 +508,9 @@ function App() {
               {dark ? <Moon size={16} /> : <Sparkles size={16} />}
             </button>
           </div>
+          <button className="logout-btn" onClick={handleLogout}>
+            Log out
+          </button>
         </div>
       </aside>
       <main className="main">
@@ -448,7 +533,34 @@ function App() {
               <Bell size={18} />
               <i />
             </button>
-            <Avatar />
+            <div className="profile-menu-root" data-profile-menu-root>
+              <button
+                className="avatar-button"
+                onClick={() => setProfileMenuOpen((open) => !open)}
+                aria-label="User profile menu"
+              >
+                <Avatar name={authUser?.name} />
+              </button>
+              {profileMenuOpen && (
+                <div className="profile-menu">
+                  <button
+                    className="profile-menu-item"
+                    onClick={() => {
+                      setProfileMenuOpen(false);
+                      go("profile");
+                    }}
+                  >
+                    Profile
+                  </button>
+                  <button
+                    className="profile-menu-item danger"
+                    onClick={handleLogout}
+                  >
+                    Log out
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
         <AnimatePresence mode="wait">
@@ -467,6 +579,7 @@ function App() {
               markComplete,
               selected,
               setItems,
+              authUser,
             })}
           </motion.div>
         </AnimatePresence>
@@ -509,8 +622,16 @@ function Logo() {
     </div>
   );
 }
-function Avatar() {
-  return <div className="avatar">AM</div>;
+function Avatar({ name = "L" }: { name?: string }) {
+  const initials =
+    name
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0]?.toUpperCase() ?? "")
+      .join("") || "L";
+
+  return <div className="avatar">{initials}</div>;
 }
 
 type Context = {
@@ -521,6 +642,7 @@ type Context = {
   markComplete: (id: number) => void;
   selected: RoadmapItem | null;
   setItems: React.Dispatch<React.SetStateAction<RoadmapItem[]>>;
+  authUser: AuthUser | null;
 };
 function renderView(view: View, context: Context) {
   switch (view) {
@@ -594,15 +716,28 @@ function Stat({
   );
 }
 
-function Dashboard({ items, completed, go, setSelected }: Context) {
+function Dashboard({ items, completed, go, setSelected, authUser }: Context) {
   const next =
     items.find((item) => item.status === "in_progress") ??
     items.find((item) => item.status === "available");
+  const firstName = authUser?.name?.split(/\s+/).filter(Boolean)[0] ?? "there";
+
+  const now = new Date();
+  const hour = now.getHours();
+  const greeting =
+    hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+  const formattedDate = new Intl.DateTimeFormat("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  }).format(now);
+
   return (
     <div className="content">
       <PageHeader
-        eyebrow="Thursday, August 27, 2026"
-        title="Good morning, Alex."
+        eyebrow={formattedDate}
+        title={`${greeting}, ${firstName}.`}
         description="A clear path beats a perfect plan. Here is your next best step."
         action={
           <button className="primary-btn" onClick={() => go("roadmap")}>
@@ -1514,11 +1649,29 @@ function Assistant() {
 }
 
 function Profile() {
+  const storedUser = localStorage.getItem("aiveda_user");
+  let userName = "Learner";
+
+  try {
+    const parsed = storedUser ? JSON.parse(storedUser) : null;
+    if (parsed?.name) userName = parsed.name;
+  } catch {
+    // ignore invalid stored user payload
+  }
+
+  const initials =
+    userName
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0]?.toUpperCase() ?? "")
+      .join("") || "L";
+
   return (
     <div className="content">
       <PageHeader
         eyebrow="Learner profile"
-        title="Alex Morgan"
+        title={userName}
         description="Your profile helps AIVeda tune every recommendation."
         action={
           <button className="secondary-btn">
@@ -1530,9 +1683,9 @@ function Profile() {
         <section className="panel profile-card">
           <div className="profile-cover" />
           <div className="profile-intro">
-            <div className="avatar large">AM</div>
+            <div className="avatar large">{initials}</div>
             <div>
-              <h2>Alex Morgan</h2>
+              <h2>{userName}</h2>
               <p>Building toward Full Stack Developer</p>
               <span className="tag mint">Learning since Apr 2026</span>
             </div>

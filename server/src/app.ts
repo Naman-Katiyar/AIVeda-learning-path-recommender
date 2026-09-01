@@ -6,6 +6,7 @@ import morgan from "morgan";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { fileURLToPath } from "node:url";
+import { loginSchema, registerSchema } from "./auth/validation.js";
 import { aiProvider } from "./services/ai/provider.js";
 import {
   activities,
@@ -58,14 +59,6 @@ if (process.env.NODE_ENV === "production") {
   app.use(express.static(clientDistPath));
 }
 
-const credentials = z.object({
-  name: z.string().trim().min(2).max(80).optional(),
-  email: z
-    .string()
-    .email()
-    .transform((value) => value.toLowerCase()),
-  password: z.string().min(8).max(128),
-});
 const goalInput = z.object({ goal: z.string().trim().min(3).max(500) });
 const profileInput = z.object({
   occupation: z.string().max(100).optional(),
@@ -115,11 +108,11 @@ app.get("/api/health", (_req, res) =>
   }),
 );
 app.post("/api/auth/register", async (req, res) => {
-  const parsed = credentials.safeParse(req.body);
+  const parsed = registerSchema.safeParse(req.body);
   if (!parsed.success)
     return fail(
       res,
-      "Use a valid email and a password of at least 8 characters.",
+      "Use a valid full name, email, and a password of at least 8 characters.",
       "VALIDATION_ERROR",
     );
   if (users.some((user) => user.email === parsed.data.email))
@@ -131,7 +124,7 @@ app.post("/api/auth/register", async (req, res) => {
     );
   const user = {
     id: id(),
-    name: parsed.data.name ?? "New learner",
+    name: parsed.data.name,
     email: parsed.data.email,
     passwordHash: await bcrypt.hash(parsed.data.password, 12),
     role: "learner" as const,
@@ -169,9 +162,7 @@ app.post("/api/auth/register", async (req, res) => {
   );
 });
 app.post("/api/auth/login", async (req, res) => {
-  const parsed = credentials
-    .pick({ email: true, password: true })
-    .safeParse(req.body);
+  const parsed = loginSchema.safeParse(req.body);
   if (!parsed.success)
     return fail(res, "Enter your email and password.", "VALIDATION_ERROR");
   const user = users.find((candidate) => candidate.email === parsed.data.email);

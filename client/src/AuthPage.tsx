@@ -23,13 +23,34 @@ export default function AuthPage({
   const [loading, setLoading] = useState(false);
   const submit = async () => {
     setError("");
+    const normalizedEmail = email.trim().toLowerCase();
+    const trimmedName = name.trim();
+
+    if (
+      !normalizedEmail ||
+      !password ||
+      (mode === "register" && !trimmedName)
+    ) {
+      setError(
+        mode === "register"
+          ? "Please complete all fields before continuing."
+          : "Please enter your email and password.",
+      );
+      return;
+    }
+
     setLoading(true);
     try {
       const result =
         mode === "login"
-          ? await api.login({ email, password })
-          : await api.register({ name, email, password });
+          ? await api.login({ email: normalizedEmail, password })
+          : await api.register({
+              name: trimmedName,
+              email: normalizedEmail,
+              password,
+            });
       localStorage.setItem("aiveda_token", result.token);
+      localStorage.setItem("aiveda_user", JSON.stringify(result.user));
       onNavigate(mode === "login" ? "/dashboard" : "/onboarding");
     } catch (submissionError) {
       setError(
@@ -63,7 +84,13 @@ export default function AuthPage({
           <ChevronRight size={15} style={{ transform: "rotate(180deg)" }} />{" "}
           Back home
         </button>
-        <div className="auth-form">
+        <form
+          className="auth-form"
+          onSubmit={(event) => {
+            event.preventDefault();
+            void submit();
+          }}
+        >
           <span className="eyebrow">
             {mode === "login" ? "Welcome back" : "Start your path"}
           </span>
@@ -83,7 +110,7 @@ export default function AuthPage({
               <input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Alex Morgan"
+                placeholder="Your full name"
               />
             </label>
           )}
@@ -108,11 +135,7 @@ export default function AuthPage({
               {error}
             </div>
           )}
-          <button
-            className="primary-btn full"
-            onClick={submit}
-            disabled={loading}
-          >
+          <button type="submit" className="primary-btn full" disabled={loading}>
             {loading
               ? "Working..."
               : mode === "login"
@@ -123,12 +146,13 @@ export default function AuthPage({
           <div className="auth-divider">
             <span>or</span>
           </div>
-          <button className="social-btn">
+          <button type="button" className="social-btn">
             <span>G</span> Continue with Google
           </button>
           <small className="auth-switch">
             {mode === "login" ? "New to AIVeda?" : "Already have an account?"}{" "}
             <button
+              type="button"
               onClick={() =>
                 onNavigate(mode === "login" ? "/register" : "/login")
               }
@@ -136,7 +160,7 @@ export default function AuthPage({
               {mode === "login" ? "Create an account" : "Sign in"}
             </button>
           </small>
-        </div>
+        </form>
       </div>
     </div>
   );

@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 
 type Props = { onNavigate: (path: string) => void };
-const Avatar = () => <div className="avatar">AM</div>;
+const Avatar = () => <div className="avatar">AI</div>;
 const Logo = () => (
   <div className="logo">
     <span className="logo-mark">
